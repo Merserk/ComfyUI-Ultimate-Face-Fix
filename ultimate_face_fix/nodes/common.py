@@ -79,8 +79,8 @@ def composite_inputs() -> list:
 
 def sampling_inputs() -> list:
     return [
-        io.Combo.Input("repair_mode", options=["detail", "repair", "reconstruct", "custom"], default="repair"),
-        io.Float.Input("custom_denoise", default=0.42, min=0.0, max=1.0, step=0.01),
+        io.Combo.Input("repair_mode", options=["detail", "repair", "reconstruct", "custom"], default="custom"),
+        io.Float.Input("custom_denoise", default=0.40, min=0.0, max=1.0, step=0.01),
         io.Int.Input("seed", default=0, min=0, max=0xFFFFFFFFFFFFFFFF, control_after_generate=True),
         io.Int.Input("steps", default=25, min=1, max=200, step=1),
         io.Float.Input("cfg", default=5.5, min=0.0, max=100.0, step=0.1),
