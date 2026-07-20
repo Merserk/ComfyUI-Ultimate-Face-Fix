@@ -4,6 +4,10 @@ Model-aware face repair for one or many faces. It detects faces, repairs each sq
 
 ## Install
 
+In **ComfyUI Manager**, search for **Ultimate Face Fix** and select **Install**. Manager installs the Python dependencies and automatically downloads, verifies, and prepares the three required face-analysis models. Restart ComfyUI when setup finishes.
+
+For a manual installation:
+
 ```bash
 cd ComfyUI/custom_nodes
 git clone https://github.com/Merserk/ComfyUI-Ultimate-Face-Fix.git
@@ -12,7 +16,7 @@ pip install -r requirements.txt
 python scripts/prepare_models.py --comfy-root ../..
 ```
 
-Restart ComfyUI. All five extension nodes are under **Add Node → ultimate face fix**. For the integrated workflow, add the detector loader, parser loader, and **Ultimate Face Fix**, then connect them. Use a generation model matching the source image. Native MediaPipe and SAM 3/3.1 connections are optional.
+All five extension nodes are under **Add Node → ultimate face fix**. For the integrated workflow, add the detector loader, parser loader, and **Ultimate Face Fix**, then connect them. Use a generation model matching the source image. Native MediaPipe and SAM 3/3.1 connections are optional.
 
 Setup uses Hugging Face's accelerated Xet downloader when available. The large SegFace `.pt` source is placed in `face_fix/parsers`, converted to the runtime `.safetensors`, and removed after a successful conversion; pass `--keep-segface-source` to retain it.
 
