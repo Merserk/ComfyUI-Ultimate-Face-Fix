@@ -2,14 +2,14 @@
   "id": "ee916a2d-52da-5ea7-b411-00594648a490",
   "revision": 0,
   "last_node_id": 26,
-  "last_link_id": 22,
+  "last_link_id": 23,
   "nodes": [
     {
       "id": 1,
       "type": "UNETLoader",
       "pos": [
-        -1100,
-        -650
+        -1800,
+        -700
       ],
       "size": [
         360,
@@ -60,8 +60,8 @@
       "id": 2,
       "type": "CLIPLoader",
       "pos": [
-        -1100,
-        -530
+        -1800,
+        -570
       ],
       "size": [
         360,
@@ -120,8 +120,8 @@
       "id": 3,
       "type": "VAELoader",
       "pos": [
-        -1100,
-        -380
+        -1800,
+        -420
       ],
       "size": [
         360,
@@ -163,8 +163,8 @@
       "id": 4,
       "type": "CLIPTextEncode",
       "pos": [
-        -700,
-        -580
+        -1350,
+        -700
       ],
       "size": [
         440,
@@ -212,8 +212,8 @@
       "id": 5,
       "type": "ConditioningZeroOut",
       "pos": [
-        -250,
-        -220
+        -850,
+        -460
       ],
       "size": [
         240,
@@ -249,8 +249,8 @@
       "id": 10,
       "type": "UltimateFaceFix",
       "pos": [
-        180,
-        -540
+        -300,
+        -700
       ],
       "size": [
         520,
@@ -484,7 +484,9 @@
           "name": "original_face_crops",
           "type": "IMAGE",
           "slot_index": 1,
-          "links": null
+          "links": [
+            23
+          ]
         },
         {
           "name": "processed_face_crops",
@@ -542,8 +544,8 @@
       "id": 6,
       "type": "EmptyLatentImage",
       "pos": [
-        -1100,
-        20
+        -1800,
+        -280
       ],
       "size": [
         300,
@@ -601,8 +603,8 @@
       "id": 7,
       "type": "KSampler",
       "pos": [
-        -650,
-        -70
+        -1350,
+        -240
       ],
       "size": [
         330,
@@ -700,7 +702,7 @@
         8,
         1.0,
         "euler",
-        "simple",
+        "beta",
         1.0
       ],
       "title": "GENERATE SOURCE IMAGE"
@@ -709,8 +711,8 @@
       "id": 8,
       "type": "VAEDecode",
       "pos": [
-        -220,
-        -70
+        -950,
+        -240
       ],
       "size": [
         220,
@@ -751,8 +753,8 @@
       "id": 12,
       "type": "UltimateFaceFixDetectorLoader",
       "pos": [
-        -620,
-        180
+        -850,
+        220
       ],
       "size": [
         350,
@@ -792,8 +794,8 @@
       "id": 13,
       "type": "UltimateFaceFixParserLoader",
       "pos": [
-        -620,
-        280
+        -850,
+        310
       ],
       "size": [
         350,
@@ -833,8 +835,8 @@
       "id": 14,
       "type": "LoadMediaPipeFaceLandmarker",
       "pos": [
-        -620,
-        380
+        -850,
+        400
       ],
       "size": [
         350,
@@ -874,8 +876,8 @@
       "id": 20,
       "type": "PreviewImage",
       "pos": [
-        -1100,
-        180
+        -950,
+        -130
       ],
       "size": [
         340,
@@ -902,8 +904,8 @@
       "id": 21,
       "type": "SaveImage",
       "pos": [
-        790,
-        -540
+        300,
+        -700
       ],
       "size": [
         360,
@@ -940,8 +942,8 @@
       "id": 22,
       "type": "PreviewImage",
       "pos": [
-        790,
-        -140
+        1140,
+        -700
       ],
       "size": [
         340,
@@ -968,8 +970,8 @@
       "id": 23,
       "type": "PreviewImage",
       "pos": [
-        1180,
-        -140
+        1560,
+        -700
       ],
       "size": [
         340,
@@ -996,8 +998,8 @@
       "id": 24,
       "type": "MaskToImage",
       "pos": [
-        750,
-        240
+        300,
+        -280
       ],
       "size": [
         220,
@@ -1032,8 +1034,8 @@
       "id": 25,
       "type": "PreviewImage",
       "pos": [
-        1010,
-        240
+        560,
+        -280
       ],
       "size": [
         340,
@@ -1058,26 +1060,31 @@
     },
     {
       "id": 26,
-      "type": "MarkdownNote",
+      "type": "PreviewImage",
+      "title": "ORIGINAL FACE CROPS",
       "pos": [
-        -1100,
-        520
+        720,
+        -700
       ],
       "size": [
-        690,
-        170
+        340,
+        280
       ],
       "flags": {},
       "order": 17,
       "mode": 0,
-      "inputs": [],
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 23
+        }
+      ],
       "outputs": [],
       "properties": {
-        "Node name for S&R": "MarkdownNote"
+        "Node name for S&R": "PreviewImage"
       },
-      "widgets_values": [
-        "## Before running\nChoose the Krea 2 Turbo UNET, krea2 text encoder, and VAE. Generation uses the native 8-step Euler/Simple preset, then every face is repaired at 768 px."
-      ]
+      "widgets_values": []
     }
   ],
   "links": [
@@ -1256,16 +1263,24 @@
       25,
       0,
       "IMAGE"
+    ],
+    [
+      23,
+      10,
+      1,
+      26,
+      0,
+      "IMAGE"
     ]
   ],
   "groups": [],
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.7,
+      "scale": 0.65,
       "offset": [
-        850,
-        450
+        1100,
+        550
       ]
     }
   },
