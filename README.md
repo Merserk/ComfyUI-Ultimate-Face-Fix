@@ -14,6 +14,8 @@ python scripts/prepare_models.py --comfy-root ../..
 
 Restart ComfyUI, add **Load Face Fix Detector (YOLO)** and **Load Face Fix Parser (SegFace)**, then connect them to **Ultimate Face Fix**. Use any generation checkpoint that matches the source image. MediaPipe and SAM 3/3.1 are optional.
 
+Setup uses Hugging Face's accelerated Xet downloader when available. The large SegFace `.pt` source is placed in `face_fix/parsers`, converted to the runtime `.safetensors`, and removed after a successful conversion; pass `--keep-segface-source` to retain it.
+
 ```text
 ComfyUI/models/
 ├── detection/mediapipe_face_fp32.safetensors

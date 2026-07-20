@@ -1,2 +1,2 @@
 ultralytics==8.4.102
-
+huggingface_hub[hf_xet]>=1.0.0,<2

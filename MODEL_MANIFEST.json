@@ -3,7 +3,7 @@
     "source": "https://huggingface.co/kartiknarayan/SegFace/resolve/5e093b03c0523f7f32a9845bbbc75ecb027c8bee/convnext_celeba_512/model_299.pt",
     "source_sha256": "3cd535bfcfab4e5c67b7df7015370c2b18cb9a4044ecb00c7c1fa8555558c507",
     "runtime_filename": "segface_convnext_celeba_512.safetensors",
-    "runtime_sha256": "a2fb92765dbac1f81829738c8468e33819428b7319fe48e9508af7b963026e85"
+    "runtime_validation": "463 tensors with required shape checks"
   },
   "mediapipe": {
     "source": "https://huggingface.co/Comfy-Org/mediapipe/resolve/b98d050e8bf406f14f063bdba697e5b5391bbbf5/detection/mediapipe_face_fp32.safetensors",
