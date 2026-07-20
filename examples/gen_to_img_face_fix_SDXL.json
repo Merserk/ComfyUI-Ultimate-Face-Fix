@@ -1,0 +1,1195 @@
+{
+  "id": "62704e76-385c-5871-9a08-f05d28bb2780",
+  "revision": 0,
+  "last_node_id": 26,
+  "last_link_id": 22,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "CheckpointLoaderSimple",
+      "pos": [
+        -1100,
+        -580
+      ],
+      "size": [
+        330,
+        100
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "ckpt_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "ckpt_name"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "slot_index": 0,
+          "links": [
+            3,
+            7
+          ]
+        },
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "slot_index": 1,
+          "links": [
+            1,
+            2
+          ]
+        },
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "slot_index": 2,
+          "links": [
+            4,
+            12
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CheckpointLoaderSimple"
+      },
+      "widgets_values": [
+        ""
+      ],
+      "title": "CHOOSE AN SDXL CHECKPOINT"
+    },
+    {
+      "id": 2,
+      "type": "CLIPTextEncode",
+      "pos": [
+        -700,
+        -580
+      ],
+      "size": [
+        440,
+        180
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 1
+        },
+        {
+          "name": "text",
+          "type": "STRING",
+          "widget": {
+            "name": "text"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "slot_index": 0,
+          "links": [
+            5,
+            8
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        "high quality shoulder-up group portrait, four people, balanced composition, coherent anatomy, detailed symmetrical faces and eyes, natural expressions"
+      ],
+      "title": "POSITIVE PROMPT"
+    },
+    {
+      "id": 3,
+      "type": "CLIPTextEncode",
+      "pos": [
+        -700,
+        -350
+      ],
+      "size": [
+        440,
+        180
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 2
+        },
+        {
+          "name": "text",
+          "type": "STRING",
+          "widget": {
+            "name": "text"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "slot_index": 0,
+          "links": [
+            6,
+            9
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        "low quality, blurry, malformed face, asymmetric eyes, crossed eyes, extra eyes, extra mouth, deformed anatomy, changed identity"
+      ],
+      "title": "NEGATIVE PROMPT"
+    },
+    {
+      "id": 8,
+      "type": "UltimateFaceFix",
+      "pos": [
+        180,
+        -540
+      ],
+      "size": [
+        520,
+        760
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 13
+        },
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 3
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 4
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 5
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 6
+        },
+        {
+          "name": "face_detector",
+          "type": "FACE_FIX_DETECTOR",
+          "link": 14
+        },
+        {
+          "name": "face_selection",
+          "type": "COMBO",
+          "widget": {
+            "name": "face_selection"
+          },
+          "link": null
+        },
+        {
+          "name": "detection_quality",
+          "type": "COMBO",
+          "widget": {
+            "name": "detection_quality"
+          },
+          "link": null
+        },
+        {
+          "name": "max_faces",
+          "type": "INT",
+          "widget": {
+            "name": "max_faces"
+          },
+          "link": null
+        },
+        {
+          "name": "min_face_size",
+          "type": "INT",
+          "widget": {
+            "name": "min_face_size"
+          },
+          "link": null
+        },
+        {
+          "name": "detection_confidence",
+          "type": "FLOAT",
+          "widget": {
+            "name": "detection_confidence"
+          },
+          "link": null
+        },
+        {
+          "name": "context_scale",
+          "type": "FLOAT",
+          "widget": {
+            "name": "context_scale"
+          },
+          "link": null
+        },
+        {
+          "name": "target_resolution",
+          "type": "COMBO",
+          "widget": {
+            "name": "target_resolution"
+          },
+          "link": null
+        },
+        {
+          "name": "face_landmarker",
+          "type": "FACE_DETECTION_MODEL",
+          "link": 16
+        },
+        {
+          "name": "bboxes",
+          "type": "BOUNDING_BOX",
+          "link": null
+        },
+        {
+          "name": "repair_mode",
+          "type": "COMBO",
+          "widget": {
+            "name": "repair_mode"
+          },
+          "link": null
+        },
+        {
+          "name": "custom_denoise",
+          "type": "FLOAT",
+          "widget": {
+            "name": "custom_denoise"
+          },
+          "link": null
+        },
+        {
+          "name": "seed",
+          "type": "INT",
+          "widget": {
+            "name": "seed"
+          },
+          "link": null
+        },
+        {
+          "name": "steps",
+          "type": "INT",
+          "widget": {
+            "name": "steps"
+          },
+          "link": null
+        },
+        {
+          "name": "cfg",
+          "type": "FLOAT",
+          "widget": {
+            "name": "cfg"
+          },
+          "link": null
+        },
+        {
+          "name": "sampler_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "sampler_name"
+          },
+          "link": null
+        },
+        {
+          "name": "scheduler",
+          "type": "COMBO",
+          "widget": {
+            "name": "scheduler"
+          },
+          "link": null
+        },
+        {
+          "name": "face_parser",
+          "type": "FACE_FIX_PARSER",
+          "link": 15
+        },
+        {
+          "name": "mask_preset",
+          "type": "COMBO",
+          "widget": {
+            "name": "mask_preset"
+          },
+          "link": null
+        },
+        {
+          "name": "sam_refine",
+          "type": "COMBO",
+          "widget": {
+            "name": "sam_refine"
+          },
+          "link": null
+        },
+        {
+          "name": "mask_grow_percent",
+          "type": "FLOAT",
+          "widget": {
+            "name": "mask_grow_percent"
+          },
+          "link": null
+        },
+        {
+          "name": "mask_feather_percent",
+          "type": "FLOAT",
+          "widget": {
+            "name": "mask_feather_percent"
+          },
+          "link": null
+        },
+        {
+          "name": "color_match_strength",
+          "type": "FLOAT",
+          "widget": {
+            "name": "color_match_strength"
+          },
+          "link": null
+        },
+        {
+          "name": "blend_mode",
+          "type": "COMBO",
+          "widget": {
+            "name": "blend_mode"
+          },
+          "link": null
+        },
+        {
+          "name": "sam_model",
+          "type": "MODEL",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "fixed_image",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            18
+          ]
+        },
+        {
+          "name": "original_face_crops",
+          "type": "IMAGE",
+          "slot_index": 1,
+          "links": null
+        },
+        {
+          "name": "processed_face_crops",
+          "type": "IMAGE",
+          "slot_index": 2,
+          "links": [
+            19
+          ]
+        },
+        {
+          "name": "face_mask",
+          "type": "MASK",
+          "slot_index": 3,
+          "links": [
+            21
+          ]
+        },
+        {
+          "name": "debug_preview",
+          "type": "IMAGE",
+          "slot_index": 4,
+          "links": [
+            20
+          ]
+        },
+        {
+          "name": "report_json",
+          "type": "STRING",
+          "slot_index": 5,
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UltimateFaceFix"
+      },
+      "widgets_values": [
+        "all",
+        "maximum",
+        8,
+        32,
+        0.25,
+        1.8,
+        "768",
+        "repair",
+        0.42,
+        9004001,
+        "fixed",
+        25,
+        5.5,
+        "euler",
+        "beta",
+        "core_face",
+        "auto",
+        1.5,
+        2.5,
+        0.65,
+        "multiband"
+      ]
+    },
+    {
+      "id": 4,
+      "type": "EmptyLatentImage",
+      "pos": [
+        -1100,
+        20
+      ],
+      "size": [
+        300,
+        110
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          },
+          "link": null
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          },
+          "link": null
+        },
+        {
+          "name": "batch_size",
+          "type": "INT",
+          "widget": {
+            "name": "batch_size"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "slot_index": 0,
+          "links": [
+            10
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "EmptyLatentImage"
+      },
+      "widgets_values": [
+        1024,
+        1024,
+        1
+      ]
+    },
+    {
+      "id": 5,
+      "type": "KSampler",
+      "pos": [
+        -650,
+        -70
+      ],
+      "size": [
+        330,
+        280
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 7
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 8
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 9
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 10
+        },
+        {
+          "name": "seed",
+          "type": "INT",
+          "widget": {
+            "name": "seed"
+          },
+          "link": null
+        },
+        {
+          "name": "steps",
+          "type": "INT",
+          "widget": {
+            "name": "steps"
+          },
+          "link": null
+        },
+        {
+          "name": "cfg",
+          "type": "FLOAT",
+          "widget": {
+            "name": "cfg"
+          },
+          "link": null
+        },
+        {
+          "name": "sampler_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "sampler_name"
+          },
+          "link": null
+        },
+        {
+          "name": "scheduler",
+          "type": "COMBO",
+          "widget": {
+            "name": "scheduler"
+          },
+          "link": null
+        },
+        {
+          "name": "denoise",
+          "type": "FLOAT",
+          "widget": {
+            "name": "denoise"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "slot_index": 0,
+          "links": [
+            11
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSampler"
+      },
+      "widgets_values": [
+        9004000,
+        "fixed",
+        25,
+        5.5,
+        "euler",
+        "beta",
+        1.0
+      ],
+      "title": "GENERATE SOURCE IMAGE"
+    },
+    {
+      "id": 6,
+      "type": "VAEDecode",
+      "pos": [
+        -220,
+        -70
+      ],
+      "size": [
+        220,
+        50
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 11
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 12
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            13,
+            17
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecode"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 10,
+      "type": "UltimateFaceFixDetectorLoader",
+      "pos": [
+        -620,
+        180
+      ],
+      "size": [
+        350,
+        60
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "detector_model",
+          "type": "COMBO",
+          "widget": {
+            "name": "detector_model"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "face_detector",
+          "type": "FACE_FIX_DETECTOR",
+          "slot_index": 0,
+          "links": [
+            14
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UltimateFaceFixDetectorLoader"
+      },
+      "widgets_values": [
+        "face_yolov9c.pt"
+      ]
+    },
+    {
+      "id": 11,
+      "type": "UltimateFaceFixParserLoader",
+      "pos": [
+        -620,
+        280
+      ],
+      "size": [
+        350,
+        60
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "parser_model",
+          "type": "COMBO",
+          "widget": {
+            "name": "parser_model"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "face_parser",
+          "type": "FACE_FIX_PARSER",
+          "slot_index": 0,
+          "links": [
+            15
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UltimateFaceFixParserLoader"
+      },
+      "widgets_values": [
+        "segface_convnext_celeba_512.safetensors"
+      ]
+    },
+    {
+      "id": 12,
+      "type": "LoadMediaPipeFaceLandmarker",
+      "pos": [
+        -620,
+        380
+      ],
+      "size": [
+        350,
+        60
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "model_name"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "FACE_DETECTION_MODEL",
+          "type": "FACE_DETECTION_MODEL",
+          "slot_index": 0,
+          "links": [
+            16
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadMediaPipeFaceLandmarker"
+      },
+      "widgets_values": [
+        "mediapipe_face_fp32.safetensors"
+      ]
+    },
+    {
+      "id": 20,
+      "type": "PreviewImage",
+      "pos": [
+        -1100,
+        180
+      ],
+      "size": [
+        340,
+        280
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 17
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": [],
+      "title": "SOURCE IMAGE"
+    },
+    {
+      "id": 21,
+      "type": "SaveImage",
+      "pos": [
+        790,
+        -540
+      ],
+      "size": [
+        360,
+        340
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 18
+        },
+        {
+          "name": "filename_prefix",
+          "type": "STRING",
+          "widget": {
+            "name": "filename_prefix"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "SaveImage"
+      },
+      "widgets_values": [
+        "UltimateFaceFix/gen_to_img_face_fix_SDXL"
+      ],
+      "title": "FIXED IMAGE"
+    },
+    {
+      "id": 22,
+      "type": "PreviewImage",
+      "pos": [
+        790,
+        -140
+      ],
+      "size": [
+        340,
+        280
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 19
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": [],
+      "title": "PROCESSED FACE CROPS"
+    },
+    {
+      "id": 23,
+      "type": "PreviewImage",
+      "pos": [
+        1180,
+        -140
+      ],
+      "size": [
+        340,
+        280
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 20
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": [],
+      "title": "DETECTION AND MASK DEBUG"
+    },
+    {
+      "id": 24,
+      "type": "MaskToImage",
+      "pos": [
+        750,
+        240
+      ],
+      "size": [
+        220,
+        50
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 21
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            22
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MaskToImage"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 25,
+      "type": "PreviewImage",
+      "pos": [
+        1010,
+        240
+      ],
+      "size": [
+        340,
+        280
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 22
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": [],
+      "title": "FINAL FACE MASK"
+    },
+    {
+      "id": 26,
+      "type": "MarkdownNote",
+      "pos": [
+        -1100,
+        520
+      ],
+      "size": [
+        690,
+        170
+      ],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "MarkdownNote"
+      },
+      "widgets_values": [
+        "## Before running\nChoose an SDXL checkpoint and edit the prompts. The workflow generates a 1024 px image, then repairs every detected face sequentially at 768 px."
+      ]
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      1,
+      2,
+      0,
+      "CLIP"
+    ],
+    [
+      2,
+      1,
+      1,
+      3,
+      0,
+      "CLIP"
+    ],
+    [
+      3,
+      1,
+      0,
+      8,
+      1,
+      "MODEL"
+    ],
+    [
+      4,
+      1,
+      2,
+      8,
+      2,
+      "VAE"
+    ],
+    [
+      5,
+      2,
+      0,
+      8,
+      3,
+      "CONDITIONING"
+    ],
+    [
+      6,
+      3,
+      0,
+      8,
+      4,
+      "CONDITIONING"
+    ],
+    [
+      7,
+      1,
+      0,
+      5,
+      0,
+      "MODEL"
+    ],
+    [
+      8,
+      2,
+      0,
+      5,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      9,
+      3,
+      0,
+      5,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      10,
+      4,
+      0,
+      5,
+      3,
+      "LATENT"
+    ],
+    [
+      11,
+      5,
+      0,
+      6,
+      0,
+      "LATENT"
+    ],
+    [
+      12,
+      1,
+      2,
+      6,
+      1,
+      "VAE"
+    ],
+    [
+      13,
+      6,
+      0,
+      8,
+      0,
+      "IMAGE"
+    ],
+    [
+      14,
+      10,
+      0,
+      8,
+      5,
+      "FACE_FIX_DETECTOR"
+    ],
+    [
+      15,
+      11,
+      0,
+      8,
+      22,
+      "FACE_FIX_PARSER"
+    ],
+    [
+      16,
+      12,
+      0,
+      8,
+      13,
+      "FACE_DETECTION_MODEL"
+    ],
+    [
+      17,
+      6,
+      0,
+      20,
+      0,
+      "IMAGE"
+    ],
+    [
+      18,
+      8,
+      0,
+      21,
+      0,
+      "IMAGE"
+    ],
+    [
+      19,
+      8,
+      2,
+      22,
+      0,
+      "IMAGE"
+    ],
+    [
+      20,
+      8,
+      4,
+      23,
+      0,
+      "IMAGE"
+    ],
+    [
+      21,
+      8,
+      3,
+      24,
+      0,
+      "MASK"
+    ],
+    [
+      22,
+      24,
+      0,
+      25,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.7,
+      "offset": [
+        850,
+        450
+      ]
+    }
+  },
+  "version": 0.4
+}

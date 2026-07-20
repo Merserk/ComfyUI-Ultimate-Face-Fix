@@ -55,7 +55,14 @@ ComfyUI/models/
 
 Outputs are the fixed image, original crops, processed crops, full-image mask, debug preview, and JSON report. **Face Fix Analyze & Crop** and **Face Fix Semantic Composite** expose the same pipeline for external crop processing.
 
-Example workflows: [`examples/single_face.json`](examples/single_face.json) and [`examples/multi_face.json`](examples/multi_face.json).
+Example workflows:
+
+- [`gen_to_img_face_fix_SDXL.json`](examples/gen_to_img_face_fix_SDXL.json) — generate with SDXL, then fix every face.
+- [`img_to_img_face_fix_SDXL.json`](examples/img_to_img_face_fix_SDXL.json) — fix every face in an existing image with SDXL.
+- [`gen_to_img_face_fix_KREA_2_Turbo.json`](examples/gen_to_img_face_fix_KREA_2_Turbo.json) — generate with local Krea 2 Turbo, then fix every face.
+- [`img_to_img_face_fix_KREA_2_Turbo.json`](examples/img_to_img_face_fix_KREA_2_Turbo.json) — fix every face in an existing image with local Krea 2 Turbo.
+
+Generation model and input-image selectors are intentionally blank. Choose your own compatible files before running a workflow.
 
 ## License
 
