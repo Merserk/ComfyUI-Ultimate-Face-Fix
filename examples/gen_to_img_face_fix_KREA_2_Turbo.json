@@ -509,12 +509,6 @@
           "links": [
             20
           ]
-        },
-        {
-          "name": "report_json",
-          "type": "STRING",
-          "slot_index": 5,
-          "links": null
         }
       ],
       "properties": {
@@ -532,8 +526,8 @@
         0.42,
         9004001,
         "fixed",
-        25,
-        5.5,
+        8,
+        1.0,
         "euler",
         "beta",
         "core_face",

@@ -1,8 +1,5 @@
 from __future__ import annotations
 
-import json
-import time
-
 from comfy_api.latest import io
 import comfy.samplers
 import folder_paths
@@ -12,10 +9,8 @@ from .detector import YoloFaceDetector, analyze_faces
 from .regions import FaceFixRegions
 from .sampling import process_face_crops
 from .semantic import SegFaceRunner
-from .visuals import detection_preview
 
 
-FaceFixRegionsType = io.Custom("FACE_FIX_REGIONS")
 FaceFixDetectorType = io.Custom("FACE_FIX_DETECTOR")
 FaceFixParserType = io.Custom("FACE_FIX_PARSER")
 FaceLandmarkerType = io.Custom("FACE_DETECTION_MODEL")
@@ -99,7 +94,7 @@ def _analyze(
     face_detector=None,
     face_landmarker=None,
     bboxes=None,
-) -> tuple[FaceFixRegions, object, object]:
+) -> tuple[FaceFixRegions, object]:
     regions, crops = analyze_faces(
         images=image,
         face_detector=face_detector,
@@ -113,7 +108,7 @@ def _analyze(
         target_size=None if target_resolution == "none" else int(target_resolution),
         quality=detection_quality,
     )
-    return regions, crops, detection_preview(image, regions)
+    return regions, crops
 
 
 class LoadFaceFixDetector(io.ComfyNode):
@@ -122,7 +117,7 @@ class LoadFaceFixDetector(io.ComfyNode):
         return io.Schema(
             node_id="UltimateFaceFixDetectorLoader",
             display_name="Load Face Fix Detector (YOLO)",
-            category="loaders/face_fix",
+            category="ultimate face fix",
             description="Loads a YOLO face detector once and exposes it through a reusable connection.",
             inputs=[
                 io.Combo.Input(
@@ -144,7 +139,7 @@ class LoadFaceFixParser(io.ComfyNode):
         return io.Schema(
             node_id="UltimateFaceFixParserLoader",
             display_name="Load Face Fix Parser (SegFace)",
-            category="loaders/face_fix",
+            category="ultimate face fix",
             description="Loads and patches the SegFace parser once for reuse by face-fix nodes.",
             inputs=[
                 io.Combo.Input(
@@ -160,95 +155,13 @@ class LoadFaceFixParser(io.ComfyNode):
         return io.NodeOutput(SegFaceRunner(_model_path("face_fix_parsers", parser_model)))
 
 
-class FaceFixAnalyze(io.ComfyNode):
-    @classmethod
-    def define_schema(cls) -> io.Schema:
-        return io.Schema(
-            node_id="UltimateFaceFixAnalyze",
-            display_name="Face Fix Analyze & Crop",
-            category="image/face_fix",
-            description="Detects faces and extracts deterministic landmark-aware square crops.",
-            inputs=_analysis_inputs(),
-            outputs=[
-                FaceFixRegionsType.Output("regions"),
-                io.Image.Output("face_crops"),
-                io.Image.Output("detection_preview"),
-                io.Int.Output("face_count"),
-                io.String.Output("report_json"),
-            ],
-        )
-
-    @classmethod
-    def execute(cls, **kwargs) -> io.NodeOutput:
-        regions, crops, preview = _analyze(**kwargs)
-        return io.NodeOutput(regions, crops, preview, regions.face_count, json.dumps(regions.report_dict(), indent=2))
-
-
-class FaceFixComposite(io.ComfyNode):
-    @classmethod
-    def define_schema(cls) -> io.Schema:
-        return io.Schema(
-            node_id="UltimateFaceFixComposite",
-            display_name="Face Fix Semantic Composite",
-            category="image/face_fix",
-            description="Builds a semantic face mask and composites externally processed crops.",
-            inputs=[
-                io.Image.Input("image"),
-                FaceFixRegionsType.Input("regions"),
-                io.Image.Input("processed_face_crops"),
-                *_composite_inputs(),
-            ],
-            outputs=[
-                io.Image.Output("fixed_image"),
-                io.Mask.Output("face_mask"),
-                io.Image.Output("debug_preview"),
-                io.String.Output("report_json"),
-            ],
-        )
-
-    @classmethod
-    def execute(
-        cls,
-        image,
-        regions,
-        processed_face_crops,
-        mask_preset,
-        sam_refine,
-        mask_grow_percent,
-        mask_feather_percent,
-        color_match_strength,
-        blend_mode,
-        face_parser=None,
-        sam_model=None,
-    ) -> io.NodeOutput:
-        fixed, mask, preview, mask_reports = composite_faces(
-            image,
-            regions,
-            processed_face_crops,
-            face_parser,
-            sam_model,
-            mask_preset,
-            sam_refine,
-            mask_grow_percent,
-            mask_feather_percent,
-            color_match_strength,
-            blend_mode,
-        )
-        report = {
-            **regions.report_dict(),
-            "parser": face_parser.model_name if face_parser is not None else "fallback",
-            "masks": mask_reports,
-        }
-        return io.NodeOutput(fixed, mask, preview, json.dumps(report, indent=2))
-
-
 class UltimateFaceFix(io.ComfyNode):
     @classmethod
     def define_schema(cls) -> io.Schema:
         return io.Schema(
             node_id="UltimateFaceFix",
             display_name="Ultimate Face Fix",
-            category="image/face_fix",
+            category="ultimate face fix",
             description="Detects, reconstructs, semantically masks, and seamlessly blends one or many faces.",
             inputs=[
                 io.Image.Input("image"),
@@ -272,7 +185,6 @@ class UltimateFaceFix(io.ComfyNode):
                 io.Image.Output("processed_face_crops"),
                 io.Mask.Output("face_mask"),
                 io.Image.Output("debug_preview"),
-                io.String.Output("report_json"),
             ],
         )
 
@@ -310,8 +222,7 @@ class UltimateFaceFix(io.ComfyNode):
         bboxes=None,
         sam_model=None,
     ) -> io.NodeOutput:
-        started = time.perf_counter()
-        regions, crops, _ = _analyze(
+        regions, crops = _analyze(
             image=image,
             face_detector=face_detector,
             face_selection=face_selection,
@@ -324,7 +235,7 @@ class UltimateFaceFix(io.ComfyNode):
             face_landmarker=face_landmarker,
             bboxes=bboxes,
         )
-        processed, sampling_reports = process_face_crops(
+        processed = process_face_crops(
             crops,
             regions,
             model,
@@ -339,7 +250,7 @@ class UltimateFaceFix(io.ComfyNode):
             sampler_name,
             scheduler,
         )
-        fixed, mask, preview, mask_reports = composite_faces(
+        fixed, mask, preview = composite_faces(
             image,
             regions,
             processed,
@@ -352,12 +263,4 @@ class UltimateFaceFix(io.ComfyNode):
             color_match_strength,
             blend_mode,
         )
-        report = {
-            **regions.report_dict(),
-            "status": "no_faces" if regions.face_count == 0 else "ok",
-            "parser": face_parser.model_name if face_parser is not None else "fallback",
-            "sampling": sampling_reports,
-            "masks": mask_reports,
-            "elapsed_seconds": round(time.perf_counter() - started, 3),
-        }
-        return io.NodeOutput(fixed, crops, processed, mask, preview, json.dumps(report, indent=2))
+        return io.NodeOutput(fixed, crops, processed, mask, preview)

@@ -51,17 +51,16 @@ def geometry_mask(region: FaceRegion, preset: str) -> torch.Tensor:
     return _pil_mask(size, lambda draw: draw.ellipse(bounds, fill=255))
 
 
-def _mask_valid(mask: torch.Tensor | None, face_box: Box, min_ratio: float, max_ratio: float) -> tuple[bool, dict]:
+def _mask_valid(mask: torch.Tensor | None, face_box: Box, min_ratio: float, max_ratio: float) -> bool:
     if mask is None:
-        return False, {"valid": False, "reason": "not_connected"}
+        return False
     area = float(mask.sum().item())
     ratio = area / max(1.0, box_area(face_box))
     height, width = mask.shape[-2:]
     center_x = max(0, min(width - 1, int(round((face_box[0] + face_box[2]) * 0.5))))
     center_y = max(0, min(height - 1, int(round((face_box[1] + face_box[3]) * 0.5))))
     center_hit = bool(mask[center_y, center_x] > 0.5)
-    valid = min_ratio <= ratio <= max_ratio and (center_hit or ratio >= 0.45)
-    return valid, {"valid": valid, "area_ratio": round(ratio, 5), "center_hit": center_hit}
+    return min_ratio <= ratio <= max_ratio and (center_hit or ratio >= 0.45)
 
 
 def _keep_primary_component(mask: torch.Tensor, face_box: Box) -> torch.Tensor:
@@ -103,7 +102,7 @@ def build_face_mask(
     sam_refine: str,
     grow_percent: float,
     feather_percent: float,
-) -> tuple[torch.Tensor, dict]:
+) -> torch.Tensor:
     size = region.target_size
     face_box = region.face_box_crop
     geometric = geometry_mask(region, preset)
@@ -112,25 +111,22 @@ def build_face_mask(
 
     semantic_original = semantic_processed = None
     semantic_original_valid = semantic_processed_valid = False
-    parser_report = {"enabled": parser is not None}
     if parser is not None:
         labels, confidence = parser.parse(torch.stack([original_crop, processed_crop]))
         masks = semantic_mask(labels, preset, size).to(device)
         semantic_original, semantic_processed = masks[0], masks[1]
-        semantic_original_valid, original_report = semantic_mask_valid(
+        semantic_original_valid = semantic_mask_valid(
             semantic_original.unsqueeze(0), confidence[0:1], face_box
         )
-        semantic_processed_valid, processed_report = semantic_mask_valid(
+        semantic_processed_valid = semantic_mask_valid(
             semantic_processed.unsqueeze(0), confidence[1:2], face_box
         )
-        parser_report.update({"original": original_report, "processed": processed_report})
 
     sam_original = sam_processed = None
     sam_original_valid = sam_processed_valid = False
     run_sam = sam_model is not None and (
         sam_refine == "always" or (sam_refine == "auto" and not (semantic_original_valid and semantic_processed_valid))
     )
-    sam_report = {"enabled": sam_model is not None, "executed": run_sam}
     if run_sam:
         sam_original = sam_box_mask(original_crop, face_box, sam_model)
         sam_processed = sam_box_mask(processed_crop, face_box, sam_model)
@@ -138,9 +134,8 @@ def build_face_mask(
             sam_original = sam_original.to(device)
         if sam_processed is not None:
             sam_processed = sam_processed.to(device)
-        sam_original_valid, original_sam_report = _mask_valid(sam_original, face_box, 0.15, 2.5)
-        sam_processed_valid, processed_sam_report = _mask_valid(sam_processed, face_box, 0.15, 2.5)
-        sam_report.update({"original": original_sam_report, "processed": processed_sam_report})
+        sam_original_valid = _mask_valid(sam_original, face_box, 0.15, 2.5)
+        sam_processed_valid = _mask_valid(sam_processed, face_box, 0.15, 2.5)
 
     semantic_fused = None
     if semantic_original_valid:
@@ -166,12 +161,10 @@ def build_face_mask(
 
     if semantic_fused is not None:
         base = semantic_fused
-        source = "segface"
         if sam_fused is not None:
             constrained = base * dilate(sam_fused, 2)
             if constrained.sum() >= base.sum() * 0.55:
                 base = constrained
-                source = "segface+sam"
         if preset != "head":
             geometry_radius = max(2, int(round((face_box[2] - face_box[0]) * 0.05)))
             constrained = base * dilate(geometric, geometry_radius)
@@ -179,18 +172,10 @@ def build_face_mask(
                 base = constrained
     elif sam_fused is not None:
         base = sam_fused * dilate(geometric, max(2, int(round((face_box[2] - face_box[0]) * 0.05))))
-        source = "sam+landmarks" if region.landmark_hull_crop else "sam+geometry"
     else:
         base = geometric
-        source = "landmarks" if region.landmark_hull_crop else "geometry"
 
     base = _keep_primary_component((base > 0.5).float(), face_box)
     face_width = max(1.0, face_box[2] - face_box[0])
     alpha = _soften(base, face_width, grow_percent, feather_percent)
-    return alpha, {
-        "source": source,
-        "parser": parser_report,
-        "sam": sam_report,
-        "hard_area": int((base > 0.5).sum().item()),
-        "alpha_area": round(float(alpha.sum().item()), 3),
-    }
+    return alpha

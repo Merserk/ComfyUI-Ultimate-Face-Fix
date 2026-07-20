@@ -421,12 +421,6 @@
           "links": [
             14
           ]
-        },
-        {
-          "name": "report_json",
-          "type": "STRING",
-          "slot_index": 5,
-          "links": null
         }
       ],
       "properties": {

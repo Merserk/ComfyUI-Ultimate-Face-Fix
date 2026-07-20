@@ -128,10 +128,10 @@ def composite_faces(
     feather_percent: float,
     color_match_strength: float,
     blend_mode: str,
-) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, list[dict]]:
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     if regions.face_count == 0:
         empty_mask = torch.zeros(images.shape[:3], dtype=images.dtype, device=images.device)
-        return images.clone(), empty_mask, mask_preview(images, empty_mask, regions), []
+        return images.clone(), empty_mask, mask_preview(images, empty_mask, regions)
     if processed_crops.ndim != 4 or processed_crops.shape[0] != regions.face_count:
         raise ValueError(
             f"Processed crop count must match detected face count: got {processed_crops.shape[0] if processed_crops.ndim else 0}, expected {regions.face_count}"
@@ -140,8 +140,6 @@ def composite_faces(
     delta_accum = torch.zeros_like(images[..., :3])
     weight_accum = torch.zeros(images.shape[:3], dtype=images.dtype, device=images.device)
     alpha_accum = torch.zeros_like(weight_accum)
-    mask_reports = []
-
     for crop_index, region in enumerate(regions.regions):
         image = images[region.source_index]
         source_height, source_width = image.shape[:2]
@@ -159,7 +157,7 @@ def composite_faces(
                 align_corners=False,
                 antialias=True,
             )[0].movedim(0, -1)
-        alpha, report = build_face_mask(
+        alpha = build_face_mask(
             original_crop,
             processed_crop,
             region,
@@ -189,8 +187,6 @@ def composite_faces(
         alpha_accum[region.source_index, alpha_dest_slice[0], alpha_dest_slice[1]] += alpha_side[
             alpha_source_slice
         ]
-        mask_reports.append({"face_index": region.face_index, **report})
-
     effective_alpha = alpha_accum.clamp(0.0, 1.0)
     normalized_delta = delta_accum / weight_accum.clamp_min(1e-7).unsqueeze(-1)
     output = images.clone()
@@ -200,4 +196,4 @@ def composite_faces(
         rgb.clamp(0.0, 1.0),
         images[..., :3],
     )
-    return output, effective_alpha, mask_preview(output, effective_alpha, regions), mask_reports
+    return output, effective_alpha, mask_preview(output, effective_alpha, regions)

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
@@ -21,12 +21,6 @@ class FaceRegion:
     landmark_hull_crop: tuple[tuple[float, float], ...]
     seed_offset: int
 
-    def report_dict(self) -> dict:
-        data = asdict(self)
-        data["confidence"] = round(self.confidence, 6)
-        return data
-
-
 @dataclass(frozen=True)
 class FaceFixRegions:
     regions: tuple[FaceRegion, ...]
@@ -38,12 +32,3 @@ class FaceFixRegions:
     @property
     def face_count(self) -> int:
         return len(self.regions)
-
-    def report_dict(self) -> dict:
-        return {
-            "face_count": self.face_count,
-            "detector": self.detector_name,
-            "selection": self.selection,
-            "target_size": self.target_size if self.target_size is not None else "native",
-            "faces": [region.report_dict() for region in self.regions],
-        }

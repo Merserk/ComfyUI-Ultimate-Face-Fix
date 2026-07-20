@@ -199,8 +199,6 @@ def main() -> int:
         "face_detector": {"path": str(yolo_output), "sha256": sha256(yolo_output)},
         "mediapipe": {"path": str(mediapipe_output), "sha256": sha256(mediapipe_output)},
     }
-    manifest_path = Path(__file__).resolve().parents[1] / "MODEL_MANIFEST.generated.json"
-    manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     if not args.keep_segface_source:
         segface_source.unlink(missing_ok=True)
     try:

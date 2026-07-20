@@ -15,6 +15,30 @@ REPAIR_DENOISE = {
 }
 
 
+def normalize_vae_images(decoded: torch.Tensor) -> torch.Tensor:
+    """Normalize ComfyUI image and single-frame video VAE output to one HWC image."""
+    if not isinstance(decoded, torch.Tensor):
+        raise ValueError(f"The connected VAE returned {type(decoded).__name__}, expected a torch.Tensor")
+    if decoded.ndim == 5:
+        decoded = decoded.reshape(-1, decoded.shape[-3], decoded.shape[-2], decoded.shape[-1])
+    if decoded.ndim != 4:
+        raise ValueError(
+            "The connected VAE must decode to BHWC or BTHWC image data; "
+            f"received shape {tuple(decoded.shape)}"
+        )
+    if decoded.shape[0] != 1:
+        raise ValueError(
+            "Each face crop must decode to exactly one image; "
+            f"received {decoded.shape[0]} images with shape {tuple(decoded.shape)}"
+        )
+    if decoded.shape[-1] not in (3, 4):
+        raise ValueError(
+            "The connected VAE must return channel-last RGB or RGBA images; "
+            f"received shape {tuple(decoded.shape)}"
+        )
+    return decoded[0, ..., :3].clamp(0.0, 1.0)
+
+
 def _vae_alignment(vae) -> int:
     get_alignment = getattr(vae, "spacial_compression_encode", None)
     if get_alignment is None:
@@ -52,13 +76,12 @@ def process_face_crops(
     cfg: float,
     sampler_name: str,
     scheduler: str,
-) -> tuple[torch.Tensor, list[dict]]:
+) -> torch.Tensor:
     if regions.face_count == 0:
-        return crops.clone(), []
+        return crops.clone()
     denoise = custom_denoise if repair_mode == "custom" else REPAIR_DENOISE[repair_mode]
     comfy_nodes = importlib.import_module("nodes")
     outputs = []
-    reports = []
     for crop_index, region in enumerate(regions.regions):
         crop = crops[crop_index : crop_index + 1, : region.target_size, : region.target_size, :3]
         vae_padding = (0, 0, 0, 0)
@@ -79,28 +102,15 @@ def process_face_crops(
             latent,
             denoise=denoise,
         )[0]
-        decoded = vae.decode(sampled["samples"])[0, ..., :3].clamp(0.0, 1.0)
+        decoded = normalize_vae_images(vae.decode(sampled["samples"]))
         expected_side = sample_crop.shape[1]
         if decoded.shape[:2] != (expected_side, expected_side):
             raise ValueError(
-                "The connected VAE changed the padded native crop dimensions: "
-                f"expected {expected_side}x{expected_side}, got {decoded.shape[1]}x{decoded.shape[0]}"
+                "The connected VAE changed the face crop dimensions: "
+                f"expected {expected_side}x{expected_side}, got {decoded.shape[1]}x{decoded.shape[0]} "
+                f"after output normalization"
             )
         left, top, _, _ = vae_padding
         decoded = decoded[top : top + region.target_size, left : left + region.target_size]
         outputs.append(decoded)
-        reports.append(
-            {
-                "face_index": region.face_index,
-                "seed": face_seed,
-                "denoise": denoise,
-                "steps": steps,
-                "cfg": cfg,
-                "sampler": sampler_name,
-                "scheduler": scheduler,
-                "processing_size": region.target_size,
-                "vae_aligned_size": expected_side,
-                "vae_padding": vae_padding,
-            }
-        )
-    return stack_square_crops(outputs), reports
+    return stack_square_crops(outputs)

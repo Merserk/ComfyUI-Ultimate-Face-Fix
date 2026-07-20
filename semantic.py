@@ -130,7 +130,7 @@ def semantic_mask(labels: torch.Tensor, preset: str, size: int) -> torch.Tensor:
     return resized
 
 
-def semantic_mask_valid(mask: torch.Tensor, confidence: torch.Tensor, face_box: Box) -> tuple[bool, dict]:
+def semantic_mask_valid(mask: torch.Tensor, confidence: torch.Tensor, face_box: Box) -> bool:
     height, width = mask.shape[-2:]
     confidence = F.interpolate(confidence.unsqueeze(1), size=(height, width), mode="bilinear", align_corners=False)[:, 0]
     area = float(mask.sum().item())
@@ -138,24 +138,14 @@ def semantic_mask_valid(mask: torch.Tensor, confidence: torch.Tensor, face_box: 
     ratio = area / expected
     if area > 0:
         mean_confidence = float((confidence * mask).sum().item() / area)
-        y, x = torch.where(mask[0] > 0.5)
-        mask_box = (float(x.min()), float(y.min()), float(x.max() + 1), float(y.max() + 1))
     else:
         mean_confidence = 0.0
-        mask_box = (0.0, 0.0, 0.0, 0.0)
     center_x = int(round((face_box[0] + face_box[2]) * 0.5))
     center_y = int(round((face_box[1] + face_box[3]) * 0.5))
     center_x = max(0, min(width - 1, center_x))
     center_y = max(0, min(height - 1, center_y))
     center_hit = bool(mask[0, center_y, center_x] > 0.5)
-    valid = 0.15 <= ratio <= 1.80 and mean_confidence >= 0.35 and (center_hit or ratio >= 0.35)
-    return valid, {
-        "valid": valid,
-        "area_ratio": round(ratio, 5),
-        "mean_confidence": round(mean_confidence, 5),
-        "center_hit": center_hit,
-        "mask_box": mask_box,
-    }
+    return 0.15 <= ratio <= 1.80 and mean_confidence >= 0.35 and (center_hit or ratio >= 0.35)
 
 
 def sam_box_mask(image: torch.Tensor, face_box: Box, sam_model, refine_iterations: int = 2) -> torch.Tensor | None:

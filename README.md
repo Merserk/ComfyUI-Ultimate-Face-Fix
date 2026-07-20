@@ -12,7 +12,7 @@ pip install -r requirements.txt
 python scripts/prepare_models.py --comfy-root ../..
 ```
 
-Restart ComfyUI, add **Load Face Fix Detector (YOLO)** and **Load Face Fix Parser (SegFace)**, then connect them to **Ultimate Face Fix**. Use any generation checkpoint that matches the source image. MediaPipe and SAM 3/3.1 are optional.
+Restart ComfyUI. Under **Add Node → ultimate face fix**, add the detector loader, parser loader, and **Ultimate Face Fix**, then connect them. Use a generation model matching the source image. Native MediaPipe and SAM 3/3.1 connections are optional.
 
 Setup uses Hugging Face's accelerated Xet downloader when available. The large SegFace `.pt` source is placed in `face_fix/parsers`, converted to the runtime `.safetensors`, and removed after a successful conversion; pass `--keep-segface-source` to retain it.
 
@@ -53,7 +53,7 @@ ComfyUI/models/
 | `color_match_strength` | Matches processed colors to the original boundary; `0` disables it. |
 | `blend_mode` | `multiband` hides seams best; `alpha` is faster. |
 
-Outputs are the fixed image, original crops, processed crops, full-image mask, debug preview, and JSON report. **Face Fix Analyze & Crop** and **Face Fix Semantic Composite** expose the same pipeline for external crop processing.
+Outputs are the fixed image, original face crops, processed face crops, full-image face mask, and debug preview.
 
 Example workflows:
 
@@ -62,7 +62,7 @@ Example workflows:
 - [`gen_to_img_face_fix_KREA_2_Turbo.json`](examples/gen_to_img_face_fix_KREA_2_Turbo.json) — generate with local Krea 2 Turbo, then fix every face.
 - [`img_to_img_face_fix_KREA_2_Turbo.json`](examples/img_to_img_face_fix_KREA_2_Turbo.json) — fix every face in an existing image with local Krea 2 Turbo.
 
-Generation model and input-image selectors are intentionally blank. Choose your own compatible files before running a workflow.
+Generation model and input-image selectors are intentionally blank. Choose your own compatible files before running. Krea 2 Turbo workflows use 8 steps and CFG 1.0 for generation and face repair; SDXL workflows use 25 steps and CFG 5.5.
 
 ## License
 
