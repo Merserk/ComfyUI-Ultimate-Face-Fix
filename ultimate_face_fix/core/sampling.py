@@ -5,7 +5,7 @@ import importlib
 import torch
 
 from .geometry import reflection_indices, stack_square_crops
-from .regions import FaceFixRegions
+from .types import FaceFixRegions
 
 
 REPAIR_DENOISE = {

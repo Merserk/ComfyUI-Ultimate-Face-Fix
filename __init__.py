@@ -15,7 +15,13 @@ os.makedirs(PARSER_ROOT, exist_ok=True)
 folder_paths.folder_names_and_paths["face_fix_detectors"] = ([DETECTOR_ROOT], folder_paths.supported_pt_extensions)
 folder_paths.folder_names_and_paths["face_fix_parsers"] = ([PARSER_ROOT], folder_paths.supported_pt_extensions)
 
-from .nodes import LoadFaceFixDetector, LoadFaceFixParser, UltimateFaceFix
+from .ultimate_face_fix import (
+    LoadFaceFixDetector,
+    LoadFaceFixParser,
+    UltimateFaceFix,
+    UltimateFaceFixExtract,
+    UltimateFaceFixProcess,
+)
 
 
 class UltimateFaceFixExtension(ComfyExtension):
@@ -24,6 +30,8 @@ class UltimateFaceFixExtension(ComfyExtension):
         return [
             LoadFaceFixDetector,
             LoadFaceFixParser,
+            UltimateFaceFixExtract,
+            UltimateFaceFixProcess,
             UltimateFaceFix,
         ]
 

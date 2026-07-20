@@ -1,0 +1,23 @@
+[project]
+name = "ultimate-face-fix"
+version = "1.0.0"
+description = "Model-aware semantic face repair for single-face and multi-face ComfyUI workflows."
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+dependencies = [
+    "ultralytics==8.4.102",
+    "huggingface_hub[hf_xet]>=1.24.0,<2",
+]
+classifiers = [
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Repository = "https://github.com/Merserk/ComfyUI-Ultimate-Face-Fix"
+Documentation = "https://github.com/Merserk/ComfyUI-Ultimate-Face-Fix#readme"
+Issues = "https://github.com/Merserk/ComfyUI-Ultimate-Face-Fix/issues"
+
+[tool.comfy]
+PublisherId = "merserk"
+DisplayName = "Ultimate Face Fix"
+requires-comfyui = ">=0.28.0"

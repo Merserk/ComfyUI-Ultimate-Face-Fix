@@ -2,11 +2,12 @@ from __future__ import annotations
 
 import math
 from collections.abc import Iterable
+from dataclasses import replace
 
 import torch
 import torch.nn.functional as F
 
-from .regions import FaceRegion
+from .types import FaceFixRegions, FaceRegion
 
 
 Box = tuple[float, float, float, float]
@@ -199,3 +200,53 @@ def stack_square_crops(crops: list[torch.Tensor]) -> torch.Tensor:
         x_indices = reflection_indices(0, batch_side, crop.shape[1], crop.device)
         padded.append(crop.index_select(0, y_indices).index_select(1, x_indices))
     return torch.stack(padded)
+
+
+def rescale_regions_for_crop_batch(
+    regions: FaceFixRegions,
+    source_batch_side: int,
+    processed_batch_side: int,
+) -> FaceFixRegions:
+    """Scale crop-space metadata after a uniform external resize of the crop batch."""
+    if source_batch_side <= 0 or processed_batch_side <= 0:
+        raise ValueError(
+            "Face crop batch dimensions must be positive; "
+            f"got source={source_batch_side}, processed={processed_batch_side}"
+        )
+    if source_batch_side == processed_batch_side or regions.face_count == 0:
+        return regions
+
+    scale = processed_batch_side / source_batch_side
+    scaled_regions = []
+    for region in regions.regions:
+        target_size = max(1, int(round(region.target_size * scale)))
+        if target_size > processed_batch_side:
+            raise ValueError(
+                "The externally processed crop is too small for its recorded face area: "
+                f"need {target_size}px inside a {processed_batch_side}px batch"
+            )
+        forward = (
+            tuple(value * scale for value in region.forward_transform[0]),
+            tuple(value * scale for value in region.forward_transform[1]),
+            (0.0, 0.0, 1.0),
+        )
+        inverse = (
+            (region.inverse_transform[0][0] / scale, 0.0, region.inverse_transform[0][2]),
+            (0.0, region.inverse_transform[1][1] / scale, region.inverse_transform[1][2]),
+            (0.0, 0.0, 1.0),
+        )
+        scaled_regions.append(
+            replace(
+                region,
+                target_size=target_size,
+                forward_transform=forward,
+                inverse_transform=inverse,
+                face_box_crop=tuple(value * scale for value in region.face_box_crop),
+                landmark_hull_crop=tuple((x * scale, y * scale) for x, y in region.landmark_hull_crop),
+            )
+        )
+
+    common_target = None
+    if regions.target_size is not None:
+        common_target = max(1, int(round(regions.target_size * scale)))
+    return replace(regions, regions=tuple(scaled_regions), target_size=common_target)

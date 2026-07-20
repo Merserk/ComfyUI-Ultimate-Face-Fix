@@ -109,7 +109,7 @@
         "Node name for S&R": "CLIPTextEncode"
       },
       "widgets_values": [
-        "two cute girls standing together, close friends, shoulder-up portrait, gentle smiles, simple charming outfits, soft natural poses, beautiful expressive eyes, clean detailed faces, warm flattering light, dreamy pastel background, polished high quality anime illustration, single cohesive scene"
+        "(2girls:1.4), full-body anime fantasy scene, two young women standing close together at the center of a castle terrace. Left: fit white-haired female knight with a cute gentle face, blue eyes, polished silver plate armor, a blue cape, and a sword at her side. Right: slim red-haired old-fashioned Victorian female butler with a warm face, green eyes, a black tailcoat, fitted waistcoat, white cravat, trousers, and white gloves. Medieval castle, distant green mountains, blue sky, cinematic daylight."
       ],
       "title": "POSITIVE PROMPT"
     },
@@ -157,7 +157,7 @@
         "Node name for S&R": "CLIPTextEncode"
       },
       "widgets_values": [
-        "low quality, blurry, malformed face, asymmetric eyes, crossed eyes, extra eyes, extra mouth, deformed anatomy, changed identity, collage, grid, contact sheet, split screen, character sheet, repeated portraits"
+        "solo, 1girl, 3girls, 4girls, extra person, crowd, twins, duplicate, same face, same hair, cropped, close-up, missing feet, character lineup, character sheet, collage, grid, split screen, blank background, plain background, frame, border, bad anatomy, extra limbs, text, watermark"
       ],
       "title": "NEGATIVE PROMPT"
     },

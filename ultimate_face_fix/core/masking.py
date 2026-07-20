@@ -10,8 +10,8 @@ from PIL import Image, ImageDraw
 from kornia.filters import gaussian_blur2d
 
 from .geometry import Box, box_area
-from .regions import FaceRegion
-from .semantic import SegFaceRunner, sam_box_mask, semantic_mask, semantic_mask_valid
+from .types import FaceRegion
+from .segmentation import SegFaceRunner, sam_box_mask, semantic_mask, semantic_mask_valid
 
 
 def dilate(mask: torch.Tensor, radius: int) -> torch.Tensor:

@@ -4,7 +4,7 @@ import numpy as np
 import torch
 from PIL import Image, ImageDraw
 
-from .regions import FaceFixRegions
+from .types import FaceFixRegions
 
 
 def detection_preview(images: torch.Tensor, regions: FaceFixRegions) -> torch.Tensor:

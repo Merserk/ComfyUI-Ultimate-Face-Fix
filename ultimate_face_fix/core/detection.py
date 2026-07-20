@@ -18,7 +18,7 @@ from .geometry import (
     stack_square_crops,
     square_bounds,
 )
-from .regions import FaceFixRegions
+from .types import FaceFixRegions
 
 
 @dataclass(frozen=True)

@@ -10,7 +10,7 @@ import comfy.model_patcher
 import comfy.utils
 
 from .geometry import Box, box_area
-from .vendor import SegFaceCeleb
+from ..vendor import SegFaceCeleb
 
 
 CELEBAMASK_CLASSES = (

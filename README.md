@@ -12,7 +12,7 @@ pip install -r requirements.txt
 python scripts/prepare_models.py --comfy-root ../..
 ```
 
-Restart ComfyUI. Under **Add Node → ultimate face fix**, add the detector loader, parser loader, and **Ultimate Face Fix**, then connect them. Use a generation model matching the source image. Native MediaPipe and SAM 3/3.1 connections are optional.
+Restart ComfyUI. All five extension nodes are under **Add Node → ultimate face fix**. For the integrated workflow, add the detector loader, parser loader, and **Ultimate Face Fix**, then connect them. Use a generation model matching the source image. Native MediaPipe and SAM 3/3.1 connections are optional.
 
 Setup uses Hugging Face's accelerated Xet downloader when available. The large SegFace `.pt` source is placed in `face_fix/parsers`, converted to the runtime `.safetensors`, and removed after a successful conversion; pass `--keep-segface-source` to retain it.
 
@@ -54,6 +54,10 @@ ComfyUI/models/
 | `blend_mode` | `multiband` hides seams best; `alpha` is faster. |
 
 Outputs are the fixed image, original face crops, processed face crops, full-image face mask, and debug preview.
+
+## Custom crop pipeline
+
+Use **Ultimate Face Fix (Extract)** and **Ultimate Face Fix (Process)** when you want custom face upscaling or enhancement before the normal generation-model repair. Send `extract_image` through your image-processing nodes, then connect the result and the matching `face_fix_context` to Process. The custom pipeline may uniformly resize or enhance crops, but it must preserve their square shape, alignment, batch count, and face order. Process returns the same five outputs as the integrated node.
 
 Example workflows:
 

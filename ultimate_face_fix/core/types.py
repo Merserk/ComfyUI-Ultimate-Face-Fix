@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+import torch
+
 
 @dataclass(frozen=True)
 class FaceRegion:
@@ -21,6 +23,7 @@ class FaceRegion:
     landmark_hull_crop: tuple[tuple[float, float], ...]
     seed_offset: int
 
+
 @dataclass(frozen=True)
 class FaceFixRegions:
     regions: tuple[FaceRegion, ...]
@@ -32,3 +35,13 @@ class FaceFixRegions:
     @property
     def face_count(self) -> int:
         return len(self.regions)
+
+
+@dataclass(frozen=True, eq=False)
+class FaceFixPipelineContext:
+    """Opaque state passed from the Extract node to the Process node."""
+
+    source_image: torch.Tensor
+    regions: FaceFixRegions
+    original_crops: torch.Tensor
+    extract_batch_side: int

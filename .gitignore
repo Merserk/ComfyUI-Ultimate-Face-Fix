@@ -1,5 +1,6 @@
 __pycache__/
 .pytest_cache/
+.ruff_cache/
 *.py[cod]
 *.log
 .venv/
@@ -8,3 +9,4 @@ examples/rendered/
 *.pt
 *.pth
 *.safetensors
+node.zip

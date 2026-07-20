@@ -6,9 +6,9 @@ from kornia.color import lab_to_rgb, rgb_to_lab
 
 from .geometry import extract_region_crop
 from .masking import build_face_mask, dilate, erode
-from .regions import FaceFixRegions
-from .semantic import SegFaceRunner
-from .visuals import mask_preview
+from .types import FaceFixRegions
+from .segmentation import SegFaceRunner
+from .previews import mask_preview
 
 
 def _weighted_stats(values: torch.Tensor, weights: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
