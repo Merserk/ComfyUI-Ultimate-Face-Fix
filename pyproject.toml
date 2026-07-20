@@ -1,6 +1,6 @@
 [project]
 name = "ultimate-face-fix"
-version = "1.1.0"
+version = "1.2.0"
 description = "Model-aware semantic face repair for single-face and multi-face ComfyUI workflows."
 license = { file = "LICENSE" }
 requires-python = ">=3.10"
