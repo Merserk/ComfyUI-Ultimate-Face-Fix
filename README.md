@@ -2,6 +2,8 @@
 
 Model-aware face repair for one or many faces. It detects faces, repairs each square crop with your connected generation model, builds a precise semantic mask, and blends only the face back into the original image. Anime, illustration, and realistic checkpoints are supported.
 
+<img width="960" height="540" alt="Cover_1920x1080" src="https://github.com/user-attachments/assets/ffb9b7fa-6e95-454d-819c-e511cc988e57" />
+
 **Supported models:** SD 1.5, SD 2.x, SDXL, SDXL Turbo, Illustrious XL, Pony Diffusion, NoobAI, Stable Cascade, SD3/SD3.5, FLUX.1, FLUX.2, Z-Image, Qwen-Image, HunyuanDiT, Hunyuan Image 2.1, PixArt Alpha/Sigma, AuraFlow, Lumina Image 2.0, HiDream-I1, Kolors, Sana, Krea 2, OmniGen/OmniGen2, and more.
 
 ## Install
