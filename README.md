@@ -6,8 +6,6 @@ Model-aware face repair for one or many faces. It detects faces, repairs each sq
 
 <img width="1672" height="941" alt="before_after_composite" src="https://github.com/user-attachments/assets/0375234a-08e2-4463-ab2b-ed9f6968c9f3" />
 
-<img width="1448" height="1086" alt="temp_oaugu_00001_" src="https://github.com/user-attachments/assets/4f1d7150-c733-4fc9-81f1-bf5115419c91" />
-
 **Supported models:** SD 1.5, SD 2.x, SDXL, SDXL Turbo, Illustrious XL, Pony Diffusion, NoobAI, Stable Cascade, SD3/SD3.5, FLUX.1, FLUX.2, Z-Image, Qwen-Image, HunyuanDiT, Hunyuan Image 2.1, PixArt Alpha/Sigma, AuraFlow, Lumina Image 2.0, HiDream-I1, Kolors, Sana, Krea 2, OmniGen/OmniGen2, and more.
 
 ## Install
@@ -24,7 +22,7 @@ pip install -r requirements.txt
 python scripts/prepare_models.py --comfy-root ../..
 ```
 
-All five extension nodes are under **Add Node → ultimate face fix**. For the integrated workflow, add the detector loader, parser loader, and **Ultimate Face Fix**, then connect them. Use a generation model matching the source image. Native MediaPipe and SAM 3/3.1 connections are optional.
+All six extension nodes are under **Add Node → ultimate face fix**. For the integrated workflow, add the detector loader, parser loader, and **Ultimate Face Fix**, then connect them. Use a generation model matching the source image. Native MediaPipe and SAM 3/3.1 connections are optional.
 
 Setup uses Hugging Face's accelerated Xet downloader when available. The large SegFace `.pt` source is placed in `face_fix/parsers`, converted to the runtime `.safetensors`, and removed after a successful conversion; pass `--keep-segface-source` to retain it.
 
@@ -70,6 +68,10 @@ Outputs are the fixed image, original face crops, processed face crops, full-ima
 ## Custom crop pipeline
 
 Use **Ultimate Face Fix (Extract)** and **Ultimate Face Fix (Process)** when you want custom face upscaling or enhancement before the normal generation-model repair. Send `extract_image` through your image-processing nodes, then connect the result and the matching `face_fix_context` to Process. The custom pipeline may uniformly resize or enhance crops, but it must preserve their square shape, alignment, batch count, and face order. Process returns the same five outputs as the integrated node.
+
+## Auto denoise
+
+Connect an image and **Load Face Fix Detector (YOLO)** to **Auto Denoise**, then connect its `custom_denoise` output to Ultimate Face Fix while `repair_mode` is set to `custom`. It averages a face-size-based recommendation from up to eight detected faces per image and shows the result inside the node.
 
 Example workflows:
 

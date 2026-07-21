@@ -18,6 +18,7 @@ folder_paths.folder_names_and_paths["face_fix_parsers"] = ([PARSER_ROOT], folder
 from .ultimate_face_fix import (
     LoadFaceFixDetector,
     LoadFaceFixParser,
+    UltimateFaceFixAutoDenoise,
     UltimateFaceFix,
     UltimateFaceFixExtract,
     UltimateFaceFixProcess,
@@ -30,6 +31,7 @@ class UltimateFaceFixExtension(ComfyExtension):
         return [
             LoadFaceFixDetector,
             LoadFaceFixParser,
+            UltimateFaceFixAutoDenoise,
             UltimateFaceFixExtract,
             UltimateFaceFixProcess,
             UltimateFaceFix,

@@ -1,6 +1,7 @@
 from .nodes import (
     LoadFaceFixDetector,
     LoadFaceFixParser,
+    UltimateFaceFixAutoDenoise,
     UltimateFaceFix,
     UltimateFaceFixExtract,
     UltimateFaceFixProcess,
@@ -10,6 +11,7 @@ from .nodes import (
 __all__ = [
     "LoadFaceFixDetector",
     "LoadFaceFixParser",
+    "UltimateFaceFixAutoDenoise",
     "UltimateFaceFixExtract",
     "UltimateFaceFixProcess",
     "UltimateFaceFix",
