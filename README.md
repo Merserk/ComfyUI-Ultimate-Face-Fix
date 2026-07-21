@@ -6,6 +6,8 @@ Model-aware face repair for one or many faces. It detects faces, repairs each sq
 
 <img width="1672" height="941" alt="before_after_composite" src="https://github.com/user-attachments/assets/0375234a-08e2-4463-ab2b-ed9f6968c9f3" />
 
+<img width="1448" height="1086" alt="temp_oaugu_00001_" src="https://github.com/user-attachments/assets/4f1d7150-c733-4fc9-81f1-bf5115419c91" />
+
 **Supported models:** SD 1.5, SD 2.x, SDXL, SDXL Turbo, Illustrious XL, Pony Diffusion, NoobAI, Stable Cascade, SD3/SD3.5, FLUX.1, FLUX.2, Z-Image, Qwen-Image, HunyuanDiT, Hunyuan Image 2.1, PixArt Alpha/Sigma, AuraFlow, Lumina Image 2.0, HiDream-I1, Kolors, Sana, Krea 2, OmniGen/OmniGen2, and more.
 
 ## Install
