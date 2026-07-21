@@ -27,6 +27,7 @@ class UltimateFaceFixAutoDenoise(io.ComfyNode):
                     tooltip="Connect to custom_denoise while Ultimate Face Fix uses Custom repair mode.",
                 )
             ],
+            is_output_node=True,
         )
 
     @classmethod
