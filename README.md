@@ -2,7 +2,7 @@
 
 Model-aware face repair for one or many faces. It detects faces, repairs each square crop with your connected generation model, builds a precise semantic mask, and blends only the face back into the original image. Anime, illustration, and realistic checkpoints are supported.
 
-<img width="960" height="540" alt="Cover_1920x1080" src="https://github.com/user-attachments/assets/ffb9b7fa-6e95-454d-819c-e511cc988e57" />
+<img width="1920" height="1080" alt="Cover_1920x1080_2" src="https://github.com/user-attachments/assets/ef9f4967-4a5d-44f0-a1ca-838f519e3493" />
 
 <img width="1672" height="941" alt="before_after_composite" src="https://github.com/user-attachments/assets/0375234a-08e2-4463-ab2b-ed9f6968c9f3" />
 
